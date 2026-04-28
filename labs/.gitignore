@@ -1,0 +1,121 @@
+# ════════════════════════════════════════════════════════════
+#   Curso Kafka NovaTech - .gitignore
+# ════════════════════════════════════════════════════════════
+
+# ─── macOS ───────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+__MACOSX/
+._*
+
+# ─── Windows ─────────────────────────────────────────────────
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ─── Linux ───────────────────────────────────────────────────
+*~
+.directory
+.Trash-*
+
+# ─── Editores ────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# ─── Certificados Lab 12 (NUNCA subir certs reales) ──────────
+labs/lab-12-seguridad-y-cierre/infra/certs/*
+!labs/lab-12-seguridad-y-cierre/infra/certs/.gitkeep
+
+# Por si en el futuro se generan certs en otros labs
+**/certs/*.jks
+**/certs/*.key
+**/certs/*.crt
+**/certs/*.csr
+**/certs/*.srl
+**/certs/*.pem
+**/certs/cert-credentials
+**/certs/.srl
+
+# ─── Volúmenes Docker accidentales ───────────────────────────
+**/data/
+**/postgres-data/
+**/kafka-data/
+**/grafana-data/
+**/prometheus-data/
+
+# ─── Logs ────────────────────────────────────────────────────
+*.log
+logs/
+**/logs/
+
+# ─── Archivos temporales ─────────────────────────────────────
+*.tmp
+*.bak
+*.cache
+*.pid
+*.lock
+
+# ─── Mi cluster del Lab 03 (el alumno arma ahí su solución) ──
+# Mantenemos el README y .gitkeep, ignoramos lo que el alumno cree
+labs/lab-03-construye-tu-cluster/mi-cluster/*
+!labs/lab-03-construye-tu-cluster/mi-cluster/.gitkeep
+!labs/lab-03-construye-tu-cluster/mi-cluster/README.md
+
+# ─── Python (por si alguien corre algún script auxiliar) ─────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# ─── Node (por si Kafbat UI o algún tooling temporal) ────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Outputs locales no destinados al repo ───────────────────
+output/
+out/
+build/
+dist/
+target/
+
+# ─── Variables de entorno LOCALES del usuario (no las del lab) ─
+# Los .env de los labs SÍ se commitean (son credenciales pedagógicas
+# documentadas, tipo "admin-secret" o "changeit"). Pero si Rodrigo
+# crea un .env.local con configs personales, eso NO se sube.
+.env.local
+.env.*.local
+*.env.local
+
+# ─── Capturas de pantalla temporales del instructor ──────────
+# Si alguien guarda screenshots en la raíz del repo por error
+CleanShot*.png
+Screenshot*.png
+Captura*.png
+*.screenshot.png
+
+# ─── ZIPs y backups del proyecto ─────────────────────────────
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.bak
+
+# ─── Notas personales del instructor (NO van al repo público) ─
+NOTAS.md
+TODO.md
+notas-personales/
