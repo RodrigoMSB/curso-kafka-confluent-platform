@@ -26,6 +26,13 @@ DAYS=3650
 CN_CA="NovaTech-CA-Lab12"
 KEYTOOL_IMAGE="eclipse-temurin:21-jdk"
 
+# Directorio temporal para archivos auxiliares (ej: extensiones de openssl).
+# Evitamos process substitution <(...) porque en Git Bash sobre Windows el
+# /proc/PID/fd/N que genera no es accesible y openssl falla con
+# "BIO_new_file: No such process".
+TMPDIR_LAB12="$(mktemp -d)"
+trap 'rm -rf "$TMPDIR_LAB12"' EXIT INT TERM
+
 # Helper portable: convierte un path POSIX a su formato nativo del sistema.
 # - En Git Bash/MSYS/Cygwin: cygpath -w (`/c/foo/bar` -> `C:\foo\bar`)
 # - En macOS/Linux: pasa tal cual
@@ -134,16 +141,22 @@ for i in 1 2 3; do
         -certreq -file /certs/$BROKER.csr -storepass $PASS
 
     # 3c. Firmar con la CA (openssl en host).
-    # Paths convertidos a formato nativo. El -extfile usa process substitution
-    # <(...) que funciona tanto en bash de Linux/Mac como en Git Bash.
+    # Escribimos las extensiones en un archivo temporal real (no usar
+    # process substitution <(...): rompe en Git Bash sobre Windows porque
+    # /proc/PID/fd/N no resuelve y openssl falla con "BIO_new_file: No
+    # such process"). El archivo temporal se limpia al exit del script
+    # vía el trap declarado al inicio.
     HOST_CA_CRT="$(to_native_path "$CERTS_DIR/ca.crt")"
     HOST_CA_KEY="$(to_native_path "$CERTS_DIR/ca.key")"
     HOST_CSR="$(to_native_path "$CERTS_DIR/$BROKER.csr")"
     HOST_CRT="$(to_native_path "$CERTS_DIR/$BROKER.crt")"
+    EXT_FILE="$TMPDIR_LAB12/ext-$BROKER.cnf"
+    echo "subjectAltName=DNS:$BROKER,DNS:localhost" > "$EXT_FILE"
+    HOST_EXT="$(to_native_path "$EXT_FILE")"
     openssl x509 -req -CA "$HOST_CA_CRT" -CAkey "$HOST_CA_KEY" \
         -in "$HOST_CSR" -out "$HOST_CRT" \
         -days $DAYS -CAcreateserial -passin pass:$PASS \
-        -extfile <(echo "subjectAltName=DNS:$BROKER,DNS:localhost")
+        -extfile "$HOST_EXT"
 
     # 3d. Importar CA al keystore (keytool en container)
     run_keytool -keystore /certs/$BROKER.keystore.jks -alias CARoot \
