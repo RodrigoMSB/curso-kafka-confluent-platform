@@ -9,8 +9,8 @@ MENSAJE="${1:-Pago confidencial #$(date +%s) - app1}"
 echo -e "${CYAN}[Produce Confidencial] User: app1 → novatech.lab12.confidencial${NC}"
 echo "  Mensaje: ${MENSAJE}"
 
-echo "$MENSAJE" | docker exec -i -e KAFKA_OPTS= cli-client kafka-console-producer \
-    --bootstrap-server localhost:9092 \
+echo "$MENSAJE" | MSYS_NO_PATHCONV=1 docker exec -i -e KAFKA_OPTS= cli-client kafka-console-producer \
+    --bootstrap-server kafka-broker-1:9092 \
     --producer.config /etc/kafka/client-properties/app1.properties \
     --topic novatech.lab12.confidencial
 

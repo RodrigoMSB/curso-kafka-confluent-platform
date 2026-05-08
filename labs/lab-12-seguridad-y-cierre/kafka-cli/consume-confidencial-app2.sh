@@ -9,8 +9,8 @@ echo -e "${RED}[Test denial] app2 intenta consumir topic confidencial...${NC}"
 echo -e "${YELLOW}  Esto DEBE fallar con 'TopicAuthorizationException' o similar.${NC}"
 echo "─────────────────────────────────────────────────────"
 
-docker exec -e KAFKA_OPTS= cli-client kafka-console-consumer \
-    --bootstrap-server localhost:9092 \
+MSYS_NO_PATHCONV=1 docker exec -e KAFKA_OPTS= cli-client kafka-console-consumer \
+    --bootstrap-server kafka-broker-1:9092 \
     --consumer.config /etc/kafka/client-properties/app2.properties \
     --topic novatech.lab12.confidencial \
     --from-beginning \

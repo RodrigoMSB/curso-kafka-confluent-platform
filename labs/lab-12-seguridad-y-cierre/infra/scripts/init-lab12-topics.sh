@@ -6,8 +6,8 @@ set -euo pipefail
 
 echo "[init-lab12-topics] Creando tópicos del Lab 12..."
 
-docker exec -e KAFKA_OPTS= cli-client kafka-topics \
-    --bootstrap-server localhost:9092 \
+MSYS_NO_PATHCONV=1 docker exec -e KAFKA_OPTS= cli-client kafka-topics \
+    --bootstrap-server kafka-broker-1:9092 \
     --command-config /etc/kafka/client-properties/admin.properties \
     --create \
     --topic novatech.lab12.publico \
@@ -15,8 +15,8 @@ docker exec -e KAFKA_OPTS= cli-client kafka-topics \
     --replication-factor 3 \
     --if-not-exists
 
-docker exec -e KAFKA_OPTS= cli-client kafka-topics \
-    --bootstrap-server localhost:9092 \
+MSYS_NO_PATHCONV=1 docker exec -e KAFKA_OPTS= cli-client kafka-topics \
+    --bootstrap-server kafka-broker-1:9092 \
     --command-config /etc/kafka/client-properties/admin.properties \
     --create \
     --topic novatech.lab12.confidencial \

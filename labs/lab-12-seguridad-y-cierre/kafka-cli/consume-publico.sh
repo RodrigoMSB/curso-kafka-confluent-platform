@@ -9,8 +9,8 @@ echo -e "${CYAN}[Consume Publico] User: app2 ← novatech.lab12.publico${NC}"
 echo -e "${YELLOW}  Esperado: app2 SÍ puede leer (tiene ACL).${NC}"
 echo "────────────────────────────────────────────────────────"
 
-docker exec -e KAFKA_OPTS= cli-client kafka-console-consumer \
-    --bootstrap-server localhost:9092 \
+MSYS_NO_PATHCONV=1 docker exec -e KAFKA_OPTS= cli-client kafka-console-consumer \
+    --bootstrap-server kafka-broker-1:9092 \
     --consumer.config /etc/kafka/client-properties/app2.properties \
     --topic novatech.lab12.publico \
     --from-beginning \

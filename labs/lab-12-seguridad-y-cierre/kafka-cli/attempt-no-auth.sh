@@ -10,8 +10,8 @@ echo -e "${YELLOW}  Esto DEBE fallar porque el listener EXTERNAL exige SASL_SSL.
 echo "─────────────────────────────────────────────────────"
 
 # kafka-topics --list SIN --command-config
-docker exec -e KAFKA_OPTS= cli-client kafka-topics \
-    --bootstrap-server localhost:9092 \
+MSYS_NO_PATHCONV=1 docker exec -e KAFKA_OPTS= cli-client kafka-topics \
+    --bootstrap-server kafka-broker-1:9092 \
     --list \
     2>&1 | head -10 || true
 

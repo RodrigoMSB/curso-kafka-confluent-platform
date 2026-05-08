@@ -9,8 +9,8 @@ echo -e "${CYAN}[Consume Confidencial] User: admin ← novatech.lab12.confidenci
 echo -e "${YELLOW}  Esperado: admin SÍ puede leer (super user, ACLs no aplican).${NC}"
 echo "────────────────────────────────────────────────────────"
 
-docker exec -e KAFKA_OPTS= cli-client kafka-console-consumer \
-    --bootstrap-server localhost:9092 \
+MSYS_NO_PATHCONV=1 docker exec -e KAFKA_OPTS= cli-client kafka-console-consumer \
+    --bootstrap-server kafka-broker-1:9092 \
     --consumer.config /etc/kafka/client-properties/admin.properties \
     --topic novatech.lab12.confidencial \
     --from-beginning \
