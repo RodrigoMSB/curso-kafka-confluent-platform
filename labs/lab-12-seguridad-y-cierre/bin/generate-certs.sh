@@ -81,11 +81,44 @@ run_keytool() {
 
 mkdir -p "$CERTS_DIR"
 
-# Idempotencia: si ya existen, salir
-if [[ -f "$CERTS_DIR/ca.crt" ]]; then
-    echo -e "${YELLOW}Los certificados ya existen en $CERTS_DIR. Saltando generación.${NC}"
+# Idempotencia: si TODOS los archivos esperados existen, saltar generación.
+# Si falta CUALQUIERA (ej: una corrida previa abortó a mitad por timeout,
+# Ctrl+C, error de shell, etc.), limpiar y regenerar todo desde cero —
+# generar parcialmente certs incompletos hace que los brokers afectados
+# fallen al arrancar con NoSuchFileException sobre el .keystore.jks.
+EXPECTED_FILES=(
+    "ca.crt"
+    "ca.key"
+    "kafka.truststore.jks"
+    "kafka-broker-1.keystore.jks"
+    "kafka-broker-2.keystore.jks"
+    "kafka-broker-3.keystore.jks"
+    "cert-credentials"
+)
+ALL_EXIST=true
+MISSING_FILES=()
+for f in "${EXPECTED_FILES[@]}"; do
+    if [[ ! -f "$CERTS_DIR/$f" ]]; then
+        ALL_EXIST=false
+        MISSING_FILES+=("$f")
+    fi
+done
+
+if [[ "$ALL_EXIST" == "true" ]]; then
+    echo -e "${YELLOW}Certificados completos detectados en $CERTS_DIR. Saltando generación.${NC}"
     echo -e "${YELLOW}Para regenerar: borrar el directorio infra/certs/ y volver a ejecutar.${NC}"
     exit 0
+fi
+
+# Si llegamos acá, falta al menos un archivo. Limpiar y regenerar todo.
+if [[ ${#MISSING_FILES[@]} -gt 0 ]]; then
+    echo -e "${YELLOW}Certificados incompletos detectados — falta(n): ${MISSING_FILES[*]}${NC}"
+    echo -e "${YELLOW}Limpiando residuos y regenerando todo desde cero...${NC}"
+    # Borrar artefactos del run anterior (no afecta a .gitkeep ni a archivos
+    # que el usuario haya colocado deliberadamente con otra extensión).
+    rm -f "$CERTS_DIR"/*.crt "$CERTS_DIR"/*.key "$CERTS_DIR"/*.jks \
+          "$CERTS_DIR"/*.csr "$CERTS_DIR"/*.srl \
+          "$CERTS_DIR/cert-credentials"
 fi
 
 # Pre-pull explícito de la imagen con feedback claro al usuario.
