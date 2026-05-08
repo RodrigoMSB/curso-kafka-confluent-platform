@@ -54,13 +54,13 @@ services:
       KAFKA_LOG_DIRS: /var/lib/kafka/data
       CLUSTER_ID: "novatech-lab12-cluster"
     volumes:
-      - ./certs:/etc/kafka/secrets:ro
+      - ./certs:/etc/kafka/secrets
       - ./jaas/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf:ro
       - kafka-broker-1-data:/var/lib/kafka/data
     networks:
       - default
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3</dev/tcp/localhost/29092' || exit 1"]
+      test: ["CMD-SHELL", "bash -c 'exec 3</dev/tcp/kafka-broker-1/29092' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 15
@@ -103,13 +103,13 @@ services:
       KAFKA_LOG_DIRS: /var/lib/kafka/data
       CLUSTER_ID: "novatech-lab12-cluster"
     volumes:
-      - ./certs:/etc/kafka/secrets:ro
+      - ./certs:/etc/kafka/secrets
       - ./jaas/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf:ro
       - kafka-broker-2-data:/var/lib/kafka/data
     networks:
       - default
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3</dev/tcp/localhost/29093' || exit 1"]
+      test: ["CMD-SHELL", "bash -c 'exec 3</dev/tcp/kafka-broker-2/29093' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 15
@@ -152,13 +152,13 @@ services:
       KAFKA_LOG_DIRS: /var/lib/kafka/data
       CLUSTER_ID: "novatech-lab12-cluster"
     volumes:
-      - ./certs:/etc/kafka/secrets:ro
+      - ./certs:/etc/kafka/secrets
       - ./jaas/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf:ro
       - kafka-broker-3-data:/var/lib/kafka/data
     networks:
       - default
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3</dev/tcp/localhost/29094' || exit 1"]
+      test: ["CMD-SHELL", "bash -c 'exec 3</dev/tcp/kafka-broker-3/29094' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 15
@@ -207,7 +207,7 @@ services:
       kafka-broker-1:
         condition: service_healthy
     volumes:
-      - ./certs:/etc/kafka/secrets:ro
+      - ./certs:/etc/kafka/secrets
       - ./client-properties:/etc/kafka/client-properties:ro
     command: tail -f /dev/null
     networks:

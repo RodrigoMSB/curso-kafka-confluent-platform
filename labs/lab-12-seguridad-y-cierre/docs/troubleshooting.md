@@ -2,23 +2,24 @@
 
 ## Síntoma 1: `bin/start-lab.sh` falla en el paso `[1/6] generando certificados`
 
-**Causa típica**: `keytool` u `openssl` no están en el PATH del host, o `infra/certs/` tiene archivos viejos con permisos no escribibles.
+**Causa típica**: `openssl` no está en el PATH del host, Docker no está corriendo, o `infra/certs/` tiene archivos viejos con permisos no escribibles.
 
 **Diagnóstico**:
 ```bash
-which keytool openssl
+which openssl              # debe estar disponible (Git Bash, macOS, Linux lo traen)
+docker ps                  # debe responder; Docker Desktop encendido
 ls -la infra/certs/
 ```
 
 **Solución**:
 ```bash
-bin/reset-lab.sh   # limpia infra/certs/
-bin/generate-certs.sh   # genera de nuevo
+bin/reset-lab.sh           # limpia infra/certs/
+bin/generate-certs.sh      # genera de nuevo
 ```
 
-Si `keytool` no existe: instala OpenJDK 17:
-- macOS: `brew install openjdk@17`
-- Linux: `sudo apt install openjdk-17-jdk`
+Notas:
+- `keytool` ya NO se requiere en el host. `bin/generate-certs.sh` lo ejecuta dentro de un contenedor `eclipse-temurin:21-jdk` que se descarga automáticamente la primera vez (~450 MB).
+- Si `docker pull eclipse-temurin:21-jdk` falla, revisar conectividad a Docker Hub o configurar un mirror corporativo.
 
 ---
 

@@ -44,13 +44,16 @@ Cierra con un **capstone** que combina los Labs 09 (Connect), 10 (Schema Registr
 
 ## Requisitos previos
 
-- Docker Desktop con **8GB RAM** mínimo asignado.
-- **OpenJDK 17** instalado en el host (para `keytool`).
-  - macOS: `brew install openjdk@17`
-  - Linux: `sudo apt install openjdk-17-jdk`
-- `openssl` (preinstalado en macOS y la mayoría de Linux).
+- **Docker Desktop** con 8GB RAM mínimo asignado. Es el único requisito del host (no se necesita Java instalado): `keytool` se ejecuta dentro de un contenedor `eclipse-temurin:21-jdk` que `bin/generate-certs.sh` levanta y descarta automáticamente.
+- `openssl` disponible en el shell del host (preinstalado en macOS, Linux y Git Bash en Windows).
 - Tener completados los Labs 09, 10 y 11 (necesarios para el capstone).
 - Disco libre ~5GB (volúmenes Docker).
+
+### Imágenes Docker que se descargan (~ primera ejecución)
+
+- `confluentinc/cp-kafka:8.2.0` (3 brokers + cli-client)
+- `ghcr.io/kafbat/kafka-ui:latest`
+- `eclipse-temurin:21-jdk` (solo se usa para generar certificados; ~450 MB)
 
 ---
 

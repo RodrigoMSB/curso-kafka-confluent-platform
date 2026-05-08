@@ -63,8 +63,13 @@ bin/generate-certs.sh
 
 ## Actividad 2: Inspeccionar el keystore del broker 1
 
+`keytool` no está en el host (es parte del JDK). Lo corremos dentro del mismo contenedor que usa `bin/generate-certs.sh`:
+
 ```bash
-keytool -list -v -keystore infra/certs/kafka-broker-1.keystore.jks -storepass changeit | head -40
+docker run --rm \
+  -v "$(pwd)/infra/certs:/certs" \
+  eclipse-temurin:21-jdk \
+  keytool -list -v -keystore /certs/kafka-broker-1.keystore.jks -storepass changeit | head -40
 ```
 
 | Pregunta | Tu respuesta |
