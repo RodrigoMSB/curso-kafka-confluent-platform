@@ -5,17 +5,19 @@
 # Portabilidad: openssl corre en el host (Git Bash en Windows lo trae,
 # macOS/Linux lo tienen preinstalado). keytool corre dentro de un contenedor
 # eclipse-temurin:21-jdk para eliminar la dependencia de Java en el host.
+#
+# Compatibilidad MSYS/Git Bash en Windows:
+#   - MSYS convierte automáticamente argumentos que empiezan con "/"
+#     (-subj /CN=..., -keystore /certs/...) a paths Windows. Eso rompe
+#     openssl y keytool.
+#   - MSYS_NO_PATHCONV=1 aplicado GLOBALMENTE rompe los paths host (los
+#     deja en formato /c/... en lugar de C:\...). Conclusión: usarlo
+#     SOLO como prefijo de comandos puntuales que tienen -subj o args
+#     /certs/...
+#   - Los paths host se convierten explícitamente a formato nativo con
+#     cygpath -w (que viene incluido en Git Bash) mediante to_native_path().
 
 set -euo pipefail
-
-# ── Prevenir conversión de paths de MSYS (Git Bash en Windows) ───────────────
-# MSYS traduce automáticamente argumentos que empiezan con "/" (como
-# `-subj /CN=...` o `-keystore /certs/...`) a paths Windows tipo
-# "C:/Program Files/Git/CN=...", lo cual rompe openssl, keytool y docker run.
-# La variable se ignora silenciosamente fuera de Git Bash, por lo que es
-# inofensiva en macOS/Linux.
-export MSYS_NO_PATHCONV=1
-
 source "$(dirname "$0")/common.sh"
 
 CERTS_DIR="$(cd "$(dirname "$0")/../infra/certs" && pwd)"
@@ -23,6 +25,52 @@ PASS="${TLS_KEYSTORE_PASSWORD:-changeit}"
 DAYS=3650
 CN_CA="NovaTech-CA-Lab12"
 KEYTOOL_IMAGE="eclipse-temurin:21-jdk"
+
+# Helper portable: convierte un path POSIX a su formato nativo del sistema.
+# - En Git Bash/MSYS/Cygwin: cygpath -w (`/c/foo/bar` -> `C:\foo\bar`)
+# - En macOS/Linux: pasa tal cual
+to_native_path() {
+    case "$(uname -s)" in
+        MINGW*|MSYS*|CYGWIN*)
+            cygpath -w "$1"
+            ;;
+        *)
+            echo "$1"
+            ;;
+    esac
+}
+
+# Detección única para condicionar prefijos a Git Bash
+case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*) IS_MSYS=1 ;;
+    *)                    IS_MSYS=0 ;;
+esac
+
+# Wrapper: ejecuta keytool dentro de un contenedor eclipse-temurin:21-jdk
+# montando $CERTS_DIR como /certs. Los paths que se pasen a keytool deben
+# referirse a /certs/<archivo>, no a la ruta del host.
+#
+# En Git Bash, los args /certs/... serían convertidos por MSYS si no se
+# protegen, así que usamos MSYS_NO_PATHCONV=1 como prefijo. El path del
+# lado izquierdo de -v se convierte explícitamente con to_native_path
+# para que docker reciba el formato nativo Windows.
+run_keytool() {
+    local host_certs
+    host_certs="$(to_native_path "$CERTS_DIR")"
+    if [[ "$IS_MSYS" -eq 1 ]]; then
+        MSYS_NO_PATHCONV=1 docker run --rm \
+            -v "$host_certs:/certs" \
+            -w /certs \
+            "$KEYTOOL_IMAGE" \
+            keytool "$@"
+    else
+        docker run --rm \
+            -v "$host_certs:/certs" \
+            -w /certs \
+            "$KEYTOOL_IMAGE" \
+            keytool "$@"
+    fi
+}
 
 mkdir -p "$CERTS_DIR"
 
@@ -32,17 +80,6 @@ if [[ -f "$CERTS_DIR/ca.crt" ]]; then
     echo -e "${YELLOW}Para regenerar: borrar el directorio infra/certs/ y volver a ejecutar.${NC}"
     exit 0
 fi
-
-# Wrapper: ejecuta keytool dentro de un contenedor eclipse-temurin:21-jdk
-# montando $CERTS_DIR como /certs. Los paths que se pasen a keytool deben
-# referirse a /certs/<archivo>, no a la ruta del host.
-run_keytool() {
-    docker run --rm \
-        -v "$CERTS_DIR:/certs" \
-        -w /certs \
-        "$KEYTOOL_IMAGE" \
-        keytool "$@"
-}
 
 # Pre-pull explícito de la imagen con feedback claro al usuario.
 # Sin docker pull -q: si la red es lenta, el alumno necesita ver el progreso
@@ -58,10 +95,22 @@ else
 fi
 
 # 1. Crear CA root (openssl en host)
+# - Paths convertidos a formato nativo (necesario en Windows)
+# - MSYS_NO_PATHCONV=1 sólo en este comando, para proteger el -subj /CN=...
 echo "  [1/5] Creando CA root..."
-openssl req -new -x509 -keyout "$CERTS_DIR/ca.key" -out "$CERTS_DIR/ca.crt" \
-    -days $DAYS -passout pass:$PASS \
-    -subj "/CN=$CN_CA/OU=Lab12/O=NovaTech/L=Santiago/C=CL"
+CA_KEY="$(to_native_path "$CERTS_DIR/ca.key")"
+CA_CRT="$(to_native_path "$CERTS_DIR/ca.crt")"
+if [[ "$IS_MSYS" -eq 1 ]]; then
+    MSYS_NO_PATHCONV=1 openssl req -new -x509 \
+        -keyout "$CA_KEY" -out "$CA_CRT" \
+        -days $DAYS -passout pass:$PASS \
+        -subj "/CN=$CN_CA/OU=Lab12/O=NovaTech/L=Santiago/C=CL"
+else
+    openssl req -new -x509 \
+        -keyout "$CA_KEY" -out "$CA_CRT" \
+        -days $DAYS -passout pass:$PASS \
+        -subj "/CN=$CN_CA/OU=Lab12/O=NovaTech/L=Santiago/C=CL"
+fi
 
 # 2. Truststore: contiene la CA root, lo usan tanto brokers como clients
 echo "  [2/5] Creando truststore..."
@@ -74,28 +123,34 @@ for i in 1 2 3; do
     BROKER="kafka-broker-$i"
     echo "  [3/5] Generando keystore para $BROKER..."
 
-    # Generar keypair (keytool en container)
+    # 3a. Generar keypair (keytool en container)
     run_keytool -keystore /certs/$BROKER.keystore.jks -alias $BROKER \
         -genkey -keyalg RSA -storepass $PASS -keypass $PASS -validity $DAYS \
         -dname "CN=$BROKER, OU=Lab12, O=NovaTech, L=Santiago, C=CL" \
         -ext "SAN=DNS:$BROKER,DNS:localhost"
 
-    # Crear CSR (keytool en container)
+    # 3b. Crear CSR (keytool en container)
     run_keytool -keystore /certs/$BROKER.keystore.jks -alias $BROKER \
         -certreq -file /certs/$BROKER.csr -storepass $PASS
 
-    # Firmar con la CA (openssl en host)
-    openssl x509 -req -CA "$CERTS_DIR/ca.crt" -CAkey "$CERTS_DIR/ca.key" \
-        -in "$CERTS_DIR/$BROKER.csr" -out "$CERTS_DIR/$BROKER.crt" \
+    # 3c. Firmar con la CA (openssl en host).
+    # Paths convertidos a formato nativo. El -extfile usa process substitution
+    # <(...) que funciona tanto en bash de Linux/Mac como en Git Bash.
+    HOST_CA_CRT="$(to_native_path "$CERTS_DIR/ca.crt")"
+    HOST_CA_KEY="$(to_native_path "$CERTS_DIR/ca.key")"
+    HOST_CSR="$(to_native_path "$CERTS_DIR/$BROKER.csr")"
+    HOST_CRT="$(to_native_path "$CERTS_DIR/$BROKER.crt")"
+    openssl x509 -req -CA "$HOST_CA_CRT" -CAkey "$HOST_CA_KEY" \
+        -in "$HOST_CSR" -out "$HOST_CRT" \
         -days $DAYS -CAcreateserial -passin pass:$PASS \
         -extfile <(echo "subjectAltName=DNS:$BROKER,DNS:localhost")
 
-    # Importar CA al keystore (keytool en container)
+    # 3d. Importar CA al keystore (keytool en container)
     run_keytool -keystore /certs/$BROKER.keystore.jks -alias CARoot \
         -import -file /certs/ca.crt \
         -storepass $PASS -keypass $PASS -noprompt
 
-    # Importar cert firmado al keystore (keytool en container)
+    # 3e. Importar cert firmado al keystore (keytool en container)
     run_keytool -keystore /certs/$BROKER.keystore.jks -alias $BROKER \
         -import -file /certs/$BROKER.crt \
         -storepass $PASS -keypass $PASS -noprompt
