@@ -31,7 +31,7 @@ services:
       # SASL config
       KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
       KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
-      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf"
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/jaas/kafka_server_jaas.conf"
       # SSL config
       KAFKA_SSL_KEYSTORE_FILENAME: kafka-broker-1.keystore.jks
       KAFKA_SSL_KEYSTORE_CREDENTIALS: cert-credentials
@@ -55,7 +55,7 @@ services:
       CLUSTER_ID: "novatech-lab12-cluster"
     volumes:
       - ./certs:/etc/kafka/secrets
-      - ./jaas/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf:ro
+      - ./jaas/kafka_server_jaas.conf:/etc/kafka/jaas/kafka_server_jaas.conf:ro
       - kafka-broker-1-data:/var/lib/kafka/data
     networks:
       - default
@@ -83,7 +83,7 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka-broker-1:39092,2@kafka-broker-2:39093,3@kafka-broker-3:39094"
       KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
       KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
-      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf"
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/jaas/kafka_server_jaas.conf"
       KAFKA_SSL_KEYSTORE_FILENAME: kafka-broker-2.keystore.jks
       KAFKA_SSL_KEYSTORE_CREDENTIALS: cert-credentials
       KAFKA_SSL_KEY_CREDENTIALS: cert-credentials
@@ -104,7 +104,7 @@ services:
       CLUSTER_ID: "novatech-lab12-cluster"
     volumes:
       - ./certs:/etc/kafka/secrets
-      - ./jaas/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf:ro
+      - ./jaas/kafka_server_jaas.conf:/etc/kafka/jaas/kafka_server_jaas.conf:ro
       - kafka-broker-2-data:/var/lib/kafka/data
     networks:
       - default
@@ -132,7 +132,7 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka-broker-1:39092,2@kafka-broker-2:39093,3@kafka-broker-3:39094"
       KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
       KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
-      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf"
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/jaas/kafka_server_jaas.conf"
       KAFKA_SSL_KEYSTORE_FILENAME: kafka-broker-3.keystore.jks
       KAFKA_SSL_KEYSTORE_CREDENTIALS: cert-credentials
       KAFKA_SSL_KEY_CREDENTIALS: cert-credentials
@@ -153,7 +153,7 @@ services:
       CLUSTER_ID: "novatech-lab12-cluster"
     volumes:
       - ./certs:/etc/kafka/secrets
-      - ./jaas/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf:ro
+      - ./jaas/kafka_server_jaas.conf:/etc/kafka/jaas/kafka_server_jaas.conf:ro
       - kafka-broker-3-data:/var/lib/kafka/data
     networks:
       - default
