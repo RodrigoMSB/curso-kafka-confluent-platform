@@ -7,6 +7,15 @@
 # eclipse-temurin:21-jdk para eliminar la dependencia de Java en el host.
 
 set -euo pipefail
+
+# ── Prevenir conversión de paths de MSYS (Git Bash en Windows) ───────────────
+# MSYS traduce automáticamente argumentos que empiezan con "/" (como
+# `-subj /CN=...` o `-keystore /certs/...`) a paths Windows tipo
+# "C:/Program Files/Git/CN=...", lo cual rompe openssl, keytool y docker run.
+# La variable se ignora silenciosamente fuera de Git Bash, por lo que es
+# inofensiva en macOS/Linux.
+export MSYS_NO_PATHCONV=1
+
 source "$(dirname "$0")/common.sh"
 
 CERTS_DIR="$(cd "$(dirname "$0")/../infra/certs" && pwd)"
@@ -52,13 +61,13 @@ fi
 echo "  [1/5] Creando CA root..."
 openssl req -new -x509 -keyout "$CERTS_DIR/ca.key" -out "$CERTS_DIR/ca.crt" \
     -days $DAYS -passout pass:$PASS \
-    -subj "/CN=$CN_CA/OU=Lab12/O=NovaTech/L=Santiago/C=CL" 2>/dev/null
+    -subj "/CN=$CN_CA/OU=Lab12/O=NovaTech/L=Santiago/C=CL"
 
 # 2. Truststore: contiene la CA root, lo usan tanto brokers como clients
 echo "  [2/5] Creando truststore..."
 run_keytool -keystore /certs/kafka.truststore.jks -alias CARoot \
     -import -file /certs/ca.crt \
-    -storepass $PASS -keypass $PASS -noprompt > /dev/null 2>&1
+    -storepass $PASS -keypass $PASS -noprompt
 
 # 3. Keystore por broker, firmado por la CA
 for i in 1 2 3; do
@@ -69,36 +78,38 @@ for i in 1 2 3; do
     run_keytool -keystore /certs/$BROKER.keystore.jks -alias $BROKER \
         -genkey -keyalg RSA -storepass $PASS -keypass $PASS -validity $DAYS \
         -dname "CN=$BROKER, OU=Lab12, O=NovaTech, L=Santiago, C=CL" \
-        -ext "SAN=DNS:$BROKER,DNS:localhost" > /dev/null 2>&1
+        -ext "SAN=DNS:$BROKER,DNS:localhost"
 
     # Crear CSR (keytool en container)
     run_keytool -keystore /certs/$BROKER.keystore.jks -alias $BROKER \
-        -certreq -file /certs/$BROKER.csr -storepass $PASS > /dev/null 2>&1
+        -certreq -file /certs/$BROKER.csr -storepass $PASS
 
     # Firmar con la CA (openssl en host)
     openssl x509 -req -CA "$CERTS_DIR/ca.crt" -CAkey "$CERTS_DIR/ca.key" \
         -in "$CERTS_DIR/$BROKER.csr" -out "$CERTS_DIR/$BROKER.crt" \
         -days $DAYS -CAcreateserial -passin pass:$PASS \
-        -extfile <(echo "subjectAltName=DNS:$BROKER,DNS:localhost") 2>/dev/null
+        -extfile <(echo "subjectAltName=DNS:$BROKER,DNS:localhost")
 
     # Importar CA al keystore (keytool en container)
     run_keytool -keystore /certs/$BROKER.keystore.jks -alias CARoot \
         -import -file /certs/ca.crt \
-        -storepass $PASS -keypass $PASS -noprompt > /dev/null 2>&1
+        -storepass $PASS -keypass $PASS -noprompt
 
     # Importar cert firmado al keystore (keytool en container)
     run_keytool -keystore /certs/$BROKER.keystore.jks -alias $BROKER \
         -import -file /certs/$BROKER.crt \
-        -storepass $PASS -keypass $PASS -noprompt > /dev/null 2>&1
+        -storepass $PASS -keypass $PASS -noprompt
 done
 
 # 4. Crear archivo con la password (para que docker compose lo monte)
 echo "  [4/5] Generando archivo credentials..."
 echo "$PASS" > "$CERTS_DIR/cert-credentials"
 
-# 5. Permisos restrictivos
+# 5. Permisos restrictivos.
+# `|| true` defensivo: chmod puede no aplicar a algunos archivos en sistemas
+# con permisos limitados (Windows), pero los archivos siguen siendo válidos.
 echo "  [5/5] Aplicando permisos..."
-chmod 600 "$CERTS_DIR"/*.key "$CERTS_DIR"/*.jks "$CERTS_DIR/cert-credentials" 2>/dev/null || true
+chmod 600 "$CERTS_DIR"/*.key "$CERTS_DIR"/*.jks "$CERTS_DIR/cert-credentials" || true
 
 echo -e "${GREEN}✓ Certificados generados en $CERTS_DIR${NC}"
 echo -e "${GREEN}  Truststore: kafka.truststore.jks (lo usan TODOS)${NC}"
