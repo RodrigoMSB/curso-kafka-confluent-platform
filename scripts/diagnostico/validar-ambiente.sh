@@ -223,9 +223,12 @@ run_with_timeout() {
 
 # ─── Arrays para reporte ───
 declare -a REPORT_LINES
-declare -a OK_LABS
-declare -a FAIL_LABS
-declare -a SKIP_LABS
+# Contadores inicializados explícitamente para compatibilidad con set -u
+# (en bash 3.2, `declare -a` sin asignación no inicializa el array vacío,
+# y ${#ARRAY[@]} truena cuando se procesa solo 1 lab que no toca esa rama).
+OK_LABS=0
+FAIL_LABS=0
+SKIP_LABS=0
 
 # ─── Iterar labs ───
 TOTAL=${#SELECTED_LABS[@]}
@@ -241,7 +244,7 @@ for lab_path in "${SELECTED_LABS[@]}"; do
     # Lab 03: SKIP (manual)
     if [[ "$lab_num" == "03" ]]; then
         echo -e "${YELLOW}⏭️  SKIP (lab manual)${NC}"
-        SKIP_LABS+=("$lab_name")
+        SKIP_LABS=$((SKIP_LABS + 1))
         REPORT_LINES+=("[$lab_num] $lab_name $(printf '%*s' $((40 - ${#lab_name})) '') SKIP (lab manual)")
         continue
     fi
@@ -255,7 +258,7 @@ for lab_path in "${SELECTED_LABS[@]}"; do
     fi
     if [[ ! -f "$start_script" ]]; then
         echo -e "${RED}❌ FAIL (no existe bin/start-lab.sh)${NC}"
-        FAIL_LABS+=("$lab_name")
+        FAIL_LABS=$((FAIL_LABS + 1))
         REPORT_LINES+=("[$lab_num] $lab_name $(printf '%*s' $((40 - ${#lab_name})) '') FAIL  (no existe bin/start-lab.sh)")
         continue
     fi
@@ -277,15 +280,15 @@ for lab_path in "${SELECTED_LABS[@]}"; do
     # Clasificar resultado
     if [[ $rc -eq 0 ]]; then
         echo -e "⏱️  ${elapsed}s ${GREEN}✅ OK${NC}"
-        OK_LABS+=("$lab_name")
+        OK_LABS=$((OK_LABS + 1))
         REPORT_LINES+=("[$lab_num] $lab_name $(printf '%*s' $((40 - ${#lab_name})) '') OK    ${elapsed}s")
     elif [[ $rc -eq 124 ]]; then
         echo -e "⏱️  ${elapsed}s ${RED}❌ TIMEOUT (>${LAB_TIMEOUT_SECS}s)${NC}"
-        FAIL_LABS+=("$lab_name")
+        FAIL_LABS=$((FAIL_LABS + 1))
         REPORT_LINES+=("[$lab_num] $lab_name $(printf '%*s' $((40 - ${#lab_name})) '') TIMEOUT (rc=124, log: ${lab_name}.log)")
     else
         echo -e "⏱️  ${elapsed}s ${RED}❌ FAIL (rc=$rc)${NC}"
-        FAIL_LABS+=("$lab_name")
+        FAIL_LABS=$((FAIL_LABS + 1))
         REPORT_LINES+=("[$lab_num] $lab_name $(printf '%*s' $((40 - ${#lab_name})) '') FAIL  (rc=$rc, log: ${lab_name}.log)")
     fi
 
@@ -327,9 +330,9 @@ done
     done
     echo ""
     echo "RESUMEN:"
-    echo "  - OK:    ${#OK_LABS[@]}"
-    echo "  - FAIL:  ${#FAIL_LABS[@]}"
-    echo "  - SKIP:  ${#SKIP_LABS[@]}"
+    echo "  - OK:    $OK_LABS"
+    echo "  - FAIL:  $FAIL_LABS"
+    echo "  - SKIP:  $SKIP_LABS"
     echo "  - TOTAL: ${#SELECTED_LABS[@]} labs probados"
     echo ""
     echo "Logs detallados: $LOGS_DIR/"
@@ -345,7 +348,7 @@ echo -e "${CYAN}Reporte completo: ${BOLD}$REPORT_FILE${NC}"
 echo ""
 
 # ─── Exit code ───
-if [[ ${#FAIL_LABS[@]} -gt 0 ]]; then
+if [[ $FAIL_LABS -gt 0 ]]; then
     exit 1
 fi
 exit 0
