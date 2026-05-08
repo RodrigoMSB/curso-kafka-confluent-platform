@@ -1,0 +1,19 @@
+# ============================================================
+# Curso Kafka - .gitignore raíz
+# ============================================================
+
+# Archivos temporales de experimentos del instructor
+labs/*/antes.txt
+labs/*/despues.txt
+labs/*/output-*.txt
+labs/*/temp-*.txt
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores
+.idea/
+.vscode/
+*.swp
+*~
