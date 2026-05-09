@@ -42,8 +42,12 @@ echo "────────────────────────�
 START=$(date +%s)
 
 if [ "$RATE_MS" -eq 0 ]; then
-    # Sin límite: máxima velocidad
-    seq 1 "$N" | awk '{ print "evento_"$1"_"systime() }' | \
+    # Sin límite: máxima velocidad.
+    # Usamos un timestamp del shell (no awk's systime, que es GNU-only y
+    # no existe en BSD awk de macOS). Es suficiente para etiquetar el
+    # batch — todos los mensajes comparten el mismo timestamp del flood.
+    TS=$(date +%s)
+    seq 1 "$N" | awk -v ts="$TS" '{ print "evento_"$1"_"ts }' | \
         docker exec -i "$BROKER" kafka-console-producer \
             --bootstrap-server "$BOOTSTRAP" \
             --topic "$TOPIC" \
