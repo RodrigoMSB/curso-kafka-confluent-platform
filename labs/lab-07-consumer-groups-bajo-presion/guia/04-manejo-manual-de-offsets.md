@@ -18,8 +18,8 @@ Por defecto, los consumers manejan offsets automáticamente (auto-commit). Pero 
 Asegúrate de que `novatech.lab07.eventos` tiene mensajes:
 
 ```bash
-docker exec kafka-broker-1 kafka-run-class kafka.tools.GetOffsetShell \
-    --broker-list kafka-broker-1:29092 \
+docker exec kafka-broker-1 kafka-get-offsets \
+    --bootstrap-server kafka-broker-1:29092 \
     --topic novatech.lab07.eventos \
     --time -1
 ```

@@ -72,8 +72,8 @@ Observa el monitor. **Cuenta cuántos segundos tarda el broker 2 en aparecer de 
 Cuenta los mensajes en el tópico:
 
 ```bash
-docker exec kafka-broker-1 kafka-run-class kafka.tools.GetOffsetShell \
-    --broker-list kafka-broker-1:29092 \
+docker exec kafka-broker-1 kafka-get-offsets \
+    --bootstrap-server kafka-broker-1:29092 \
     --topic novatech.lab05.resiliente \
     --time -1
 ```

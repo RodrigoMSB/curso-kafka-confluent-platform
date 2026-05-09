@@ -33,8 +33,8 @@ kafka-cli/produce-naive.sh novatech.payments.attempts 100
 Cuenta cuántos mensajes terminaron en el tópico:
 
 ```bash
-docker exec kafka-broker-1 kafka-run-class kafka.tools.GetOffsetShell \
-    --broker-list kafka-broker-1:29092 \
+docker exec kafka-broker-1 kafka-get-offsets \
+    --bootstrap-server kafka-broker-1:29092 \
     --topic novatech.payments.attempts \
     --time -1
 ```
@@ -60,8 +60,8 @@ kafka-cli/produce-idempotent.sh novatech.payments.attempts 100
 Cuenta de nuevo:
 
 ```bash
-docker exec kafka-broker-1 kafka-run-class kafka.tools.GetOffsetShell \
-    --broker-list kafka-broker-1:29092 \
+docker exec kafka-broker-1 kafka-get-offsets \
+    --bootstrap-server kafka-broker-1:29092 \
     --topic novatech.payments.attempts \
     --time -1
 ```

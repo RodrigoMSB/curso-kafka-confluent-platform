@@ -38,8 +38,8 @@ kafka-cli/produce-bulk.sh novatech.lab05.efimero 100
 Verifica el tamaño:
 
 ```bash
-docker exec kafka-broker-1 kafka-run-class kafka.tools.GetOffsetShell \
-    --broker-list kafka-broker-1:29092 \
+docker exec kafka-broker-1 kafka-get-offsets \
+    --bootstrap-server kafka-broker-1:29092 \
     --topic novatech.lab05.efimero \
     --time -1
 ```
@@ -60,8 +60,8 @@ Espera 90 segundos (1.5x el retention). Mientras esperas, puedes hacer otras cos
 Después de 90 segundos:
 
 ```bash
-docker exec kafka-broker-1 kafka-run-class kafka.tools.GetOffsetShell \
-    --broker-list kafka-broker-1:29092 \
+docker exec kafka-broker-1 kafka-get-offsets \
+    --bootstrap-server kafka-broker-1:29092 \
     --topic novatech.lab05.efimero \
     --time -2
 ```
@@ -94,14 +94,14 @@ Después:
 
 ```bash
 # Offsets más antiguos
-docker exec kafka-broker-1 kafka-run-class kafka.tools.GetOffsetShell \
-    --broker-list kafka-broker-1:29092 \
+docker exec kafka-broker-1 kafka-get-offsets \
+    --bootstrap-server kafka-broker-1:29092 \
     --topic novatech.lab05.efimero \
     --time -2
 
 # Offsets más nuevos
-docker exec kafka-broker-1 kafka-run-class kafka.tools.GetOffsetShell \
-    --broker-list kafka-broker-1:29092 \
+docker exec kafka-broker-1 kafka-get-offsets \
+    --bootstrap-server kafka-broker-1:29092 \
     --topic novatech.lab05.efimero \
     --time -1
 ```

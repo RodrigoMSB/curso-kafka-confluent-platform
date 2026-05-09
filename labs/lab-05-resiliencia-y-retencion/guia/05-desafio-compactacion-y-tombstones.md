@@ -36,8 +36,8 @@ done
 Verifica el offset:
 
 ```bash
-docker exec kafka-broker-1 kafka-run-class kafka.tools.GetOffsetShell \
-    --broker-list kafka-broker-1:29092 \
+docker exec kafka-broker-1 kafka-get-offsets \
+    --bootstrap-server kafka-broker-1:29092 \
     --topic novatech.lab05.estado \
     --time -1
 ```
