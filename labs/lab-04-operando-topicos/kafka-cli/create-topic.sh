@@ -66,6 +66,6 @@ docker exec "$BROKER" kafka-topics \
     --partitions "$PARTITIONS" \
     --replication-factor "$RF" \
     $IF_NOT_EXISTS \
-    "${CONFIGS[@]}"
+    ${CONFIGS[@]+"${CONFIGS[@]}"}
 
 echo -e "${GREEN}  ✓ Tópico ${TOPIC} creado${NC}"
