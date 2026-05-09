@@ -49,7 +49,7 @@ Esta es una pregunta válida en un curso de administración de Kafka. La respues
 
 ### Kafka está instalado de verdad
 
-Las imágenes oficiales de Confluent Platform (`confluentinc/cp-kafka`) traen una instalación completa de Apache Kafka 4.2, Java 17 y todas las herramientas CLI (`kafka-topics`, `kafka-console-producer`, `kafka-consumer-groups`, `kafka-metadata-quorum`, etc.) preinstaladas y listas para usar. Cuando ejecutas `docker exec kafka-broker-1 kafka-topics ...`, estás corriendo el binario real de Kafka dentro del contenedor.
+Las imágenes oficiales de Confluent Platform (`confluentinc/cp-kafka`) traen una instalación completa de Apache Kafka 4.2, Java 21 (Temurin) y todas las herramientas CLI (`kafka-topics`, `kafka-console-producer`, `kafka-consumer-groups`, `kafka-metadata-quorum`, etc.) preinstaladas y listas para usar. Cuando ejecutas `docker exec kafka-broker-1 kafka-topics ...`, estás corriendo el binario real de Kafka dentro del contenedor.
 
 ### Por qué Docker simplifica el curso
 
