@@ -52,7 +52,7 @@ Completa el diagrama con la siguiente información:
 
 - Dibuja el productor GPS (`gps-producer`)
 - Muestra con flechas hacia qué particiones envía datos
-- Nota: como el productor no especifica una clave de partición, Kafka usa round-robin
+- **Nota sobre partitioner**: el productor no especifica clave, así que Kafka usa el partitioner por defecto. Desde Kafka 2.4 (KIP-480) el default es **StickyPartitioner**, NO round-robin: el cliente "se pega" a una partición hasta llenar el batch o que venza `linger.ms`, y recién ahí cambia. Como nuestro productor envía 1 evento cada ~2 segundos (rate bajo), no llena batches y se queda mucho tiempo en una sola partición. Por eso al inspeccionar el topic con `kafka-log-dirs` vas a ver una partición con casi todos los datos y las demás con 0 — no es un bug, es StickyPartitioner. Para que se distribuya entre particiones se necesitaría: (a) usar una clave de partición, o (b) generar volumen suficiente para llenar batches.
 
 ### 5. Consumidor
 

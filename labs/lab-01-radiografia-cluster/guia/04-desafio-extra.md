@@ -62,7 +62,7 @@ Usa la salida del comando `kafka-log-dirs` del reto anterior y compara el tamañ
 <details>
 <summary>Pista 2</summary>
 
-Piensa en cómo el productor distribuye los mensajes entre las particiones. ¿Usa una clave de partición o round-robin? ¿Qué efecto tiene cada estrategia en la distribución?
+Piensa en cómo el productor distribuye los mensajes entre las particiones. El productor de NovaTech NO usa una clave de partición. Desde Kafka 2.4 el partitioner por defecto es **StickyPartitioner** (no round-robin): el cliente se "pega" a una partición hasta llenar el batch (`batch.size`) o hasta que vence `linger.ms`. Como nuestro productor envía 1 evento cada 2 segundos (rate muy bajo), no llena batches y se queda mucho tiempo en la misma partición. Resultado: vas a ver una partición con casi todos los datos y las demás vacías.
 
 </details>
 
