@@ -49,6 +49,11 @@ if [ "$DOCKER_MEM_GB" -lt 5 ]; then
 fi
 
 echo -e "${YELLOW}[1/4] Levantando contenedores del clúster NovaTech...${NC}"
+# Cleanup defensivo: eliminar contenedores y volúmenes residuales de
+# corridas previas (incluyendo posibles datos huérfanos de otros labs).
+# El "|| true" evita que falle si no había nada que apagar.
+docker compose -f "$COMPOSE_FILE" down -v --remove-orphans 2>/dev/null || true
+
 docker compose -f "$COMPOSE_FILE" up -d
 
 echo ""
