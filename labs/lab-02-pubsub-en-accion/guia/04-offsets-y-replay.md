@@ -74,6 +74,17 @@ Imagina que el módulo de Reportes tuvo un bug y necesita re-procesar todo. Vamo
 
 **Paso 1**: asegúrate de que NO haya consumidores activos en el grupo `reportes` (Ctrl+C en la terminal de la actividad 2).
 
+> **⚠ Nota operacional importante**: tras presionar Ctrl+C en un consumer, su sesión queda activa en el broker durante **~45-60 segundos** (es el `session.timeout.ms` default). Si intentás resetear el consumer group antes de ese tiempo, vas a ver:
+>
+> ```
+> Error: Assignments can only be reset if the group 'reportes' is inactive,
+> but the current state is Stable.
+> ```
+>
+> Soluciones, en orden de preferencia:
+> - **(a)** Esperar 60 segundos tras Ctrl+C antes de ejecutar el reset.
+> - **(b)** Ejecutar `bin/reset-lab.sh` para empezar el lab desde cero (es la opción más limpia si querés re-experimentar varias veces).
+
 **Paso 2**: ejecuta el reset:
 
 ```bash

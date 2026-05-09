@@ -87,7 +87,7 @@ kafka-cli/list-groups.sh
 | ¿Qué grupos aparecen? | |
 | ¿Aparece algún grupo de los consumidores que recién usaste? | |
 
-> **Pista**: Cuando consumes SIN especificar un grupo, Kafka asigna grupos efímeros y temporales que no quedan registrados. Por eso no aparecen.
+> **Pista**: Cuando consumes SIN especificar un grupo, Kafka asigna nombres aleatorios tipo `console-consumer-XXXXX` (donde XXXXX es un número aleatorio). En Kafka 4.x estos grupos **SÍ quedan registrados** en el topic interno `__consumer_offsets` y aparecen en `list-groups.sh`. Eventualmente se purgan automáticamente cuando vence `offsets.retention.minutes` (default 7 días = 10080 min). Por eso si consumes sin grupo y verificas inmediatamente con `list-groups.sh`, vas a ver una lista de grupos `console-consumer-XXXXX` correspondientes a cada terminal que abriste — son ephemeral en intención (Kafka los limpia solo) pero no son invisibles.
 
 ---
 
