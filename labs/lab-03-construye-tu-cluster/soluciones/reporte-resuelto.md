@@ -5,9 +5,9 @@
 | Pregunta | Respuesta esperada |
 |----------|-------------------|
 | Binarios `kafka-*` en `/usr/bin/` | Aproximadamente 30+. Los más relevantes: `kafka-topics`, `kafka-console-producer`, `kafka-console-consumer`, `kafka-consumer-groups`, `kafka-storage`, `kafka-metadata-quorum`, `kafka-broker-api-versions`, `kafka-configs`, `kafka-acls`, etc. |
-| Directorio de configs de ejemplo | `/etc/kafka/` y dentro `/etc/kafka/kraft/` con `server.properties` |
-| Contenido aproximado de `kraft.properties` | Configuración tipo `process.roles=broker,controller`, `node.id=1`, listeners por defecto, `log.dirs=/tmp/kraft-combined-logs` (será reemplazado por env vars al levantar) |
-| Versión de Java | OpenJDK 17 (la imagen 8.2.0 usa Java 17) |
+| Directorio de configs de ejemplo | `/etc/kafka/` con `server.properties`, `broker.properties`, `controller.properties` (en CP 8.2 ya no existe el subdirectorio `kraft/`). En runtime el entrypoint genera `/etc/kafka/kafka.properties` con la config efectiva. |
+| Contenido aproximado de `server.properties` | Configuración tipo `process.roles=broker,controller`, `node.id=1`, listeners por defecto, `log.dirs=/tmp/kraft-combined-logs` (será reemplazado por env vars al levantar) |
+| Versión de Java | OpenJDK 21 (Temurin 21.0.10 en CP 8.2.0) |
 
 ---
 

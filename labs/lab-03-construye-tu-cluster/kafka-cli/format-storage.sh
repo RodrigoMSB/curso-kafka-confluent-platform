@@ -35,7 +35,7 @@ echo "────────────────────────�
 # El comando de formato puede ya haberse ejecutado: usamos --ignore-formatted para idempotencia.
 docker exec "$CONTAINER" kafka-storage format \
     --cluster-id "$CLUSTER_ID" \
-    --config /etc/kafka/kraft/server.properties \
+    --config /etc/kafka/kafka.properties \
     --ignore-formatted
 
 echo -e "${GREEN}✓ Storage formateado en ${CONTAINER}${NC}"

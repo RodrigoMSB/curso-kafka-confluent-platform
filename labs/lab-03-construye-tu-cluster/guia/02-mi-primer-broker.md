@@ -85,7 +85,7 @@ docker ps
 > ```bash
 > docker exec kafka-broker kafka-storage format \
 >     --cluster-id <TU_CLUSTER_ID> \
->     --config /etc/kafka/kraft/server.properties \
+>     --config /etc/kafka/kafka.properties \
 >     --ignore-formatted
 > docker compose restart
 > ```

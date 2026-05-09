@@ -30,7 +30,7 @@ Este script:
 |------|-------------|
 | ¿Cuántos binarios `kafka-*` aparecen? | |
 | Lista 5 que te llamen la atención | |
-| ¿Qué archivos hay en `/etc/kafka/kraft/`? | |
+| ¿Qué archivos hay en `/etc/kafka/`? | |
 | ¿Qué versión de Java trae? | |
 
 ---
@@ -38,7 +38,7 @@ Este script:
 ## Actividad 2: Explorar el server.properties de ejemplo
 
 ```bash
-docker run --rm confluentinc/cp-kafka:8.2.0 cat /etc/kafka/kraft/server.properties | head -50
+docker run --rm confluentinc/cp-kafka:8.2.0 cat /etc/kafka/server.properties | head -50
 ```
 
 ### Anota

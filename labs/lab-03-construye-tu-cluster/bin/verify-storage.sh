@@ -21,7 +21,7 @@ fi
 echo -e "${CYAN}[Verify Storage] contenedor=${CONTAINER}${NC}"
 echo "────────────────────────────────────────────────────────"
 
-docker exec "$CONTAINER" kafka-storage info -c /etc/kafka/kraft/server.properties 2>&1 || \
+docker exec "$CONTAINER" kafka-storage info -c /etc/kafka/kafka.properties 2>&1 || \
 docker exec "$CONTAINER" ls -la /var/lib/kafka/data 2>/dev/null
 
 echo ""
