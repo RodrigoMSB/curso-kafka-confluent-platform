@@ -16,7 +16,7 @@
 |----------|-------------|
 | ¿Qué binarios CLI encuentras en `/usr/bin/` que empiecen por `kafka-`? Lista 5. | |
 | ¿En qué directorio están los archivos de configuración de ejemplo? | |
-| ¿Cuál es el contenido aproximado del archivo `kraft.properties` de ejemplo? | |
+| ¿Cuál es el contenido aproximado del archivo `server.properties` de ejemplo? | |
 | ¿Qué versión de Java trae la imagen? (pista: `java -version`) | |
 
 ---
