@@ -124,6 +124,12 @@ docker exec kafka-broker-1 kafka-topics \
     --partitions 6 --replication-factor 3
 ```
 
+> **Nota sobre el WARNING:** Vas a ver un mensaje al crear el tópico que dice:
+> ```
+> WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.
+> ```
+> Es un warning **informativo, NO un error**. Kafka acepta nombres con `.` perfectamente — el topic se crea y funciona. Lo menciona porque internamente Kafka convierte `.` y `_` a `_` para nombres de métricas JMX, así que dos topics como `foo.bar` y `foo_bar` colisionarían en métricas. Como nuestros topics no colisionan (`novatech.test`, `novatech.fleet.gps`, etc., todos distintos), ignorá el warning. Lo vas a ver en TODOS los labs del curso porque las convenciones NovaTech usan puntos.
+
 ```bash
 docker exec kafka-broker-1 kafka-topics \
     --bootstrap-server kafka-broker-1:29092 \
