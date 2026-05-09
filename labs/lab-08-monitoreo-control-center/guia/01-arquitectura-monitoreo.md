@@ -89,6 +89,8 @@ docker exec kafka-broker-1 kafka-topics \
     --list | grep _confluent
 ```
 
+> **Nota:** Al levantar Control Center vas a ver una serie de tópicos nuevos con prefijo `_confluent-controlcenter-7-9-0-1-*` (alrededor de 50 tópicos). Estos los crea Control Center automáticamente para guardar su estado interno: configuración de alertas, métricas históricas agregadas, dashboards persistidos, store de Kafka Streams para procesar las métricas. **NO los modifiques ni los borres**: si los borrás, Control Center pierde toda su configuración y dashboards y hay que reiniciar el lab desde cero. Pensalos como las "tablas internas" de Control Center, equivalentes a las tablas de sistema de un RDBMS. El tópico que importa para vos en esta actividad es `_confluent-metrics` (donde el MetricsReporter de cada broker publica las métricas crudas).
+
 ```bash
 # Una muestra de un mensaje (sale binario; ver solo el primer evento)
 docker exec kafka-broker-1 kafka-console-consumer \
