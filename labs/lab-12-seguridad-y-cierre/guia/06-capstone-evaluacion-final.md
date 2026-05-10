@@ -62,9 +62,10 @@ Deberías ver containers de los 3 labs corriendo. Si no, ve a cada lab y ejecuta
    docker exec postgres psql -U novatech -d novatech_orders \
      -c "INSERT INTO pedidos (cliente_id, producto, cantidad, monto, estado) VALUES (5001, 'Capstone test', 2, 199.50, 'pendiente');"
    ```
-3. Verifica que el JDBC Source connector lo publicó:
+3. Verifica que el JDBC Source connector lo publicó (consume desde el tópico
+   y presiona Ctrl+C cuando veas tu pedido nuevo):
    ```bash
-   kafka-cli/consumir-pedidos.sh --max-messages 5
+   kafka-cli/consume-pedidos.sh
    ```
 
 **Llena en el reporte**:

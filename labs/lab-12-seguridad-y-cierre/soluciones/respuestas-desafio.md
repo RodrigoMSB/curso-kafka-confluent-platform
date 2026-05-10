@@ -16,8 +16,8 @@ docker exec postgres psql -U novatech -d novatech_orders \
 cd labs/lab-09-kafka-connect
 connect-cli/status-connector.sh novatech-source-pedidos
 
-# 3. Consume del topic los últimos mensajes
-kafka-cli/consumir-pedidos.sh --max-messages 5
+# 3. Consume del topic los últimos mensajes (Ctrl+C cuando veas el pedido nuevo)
+kafka-cli/consume-pedidos.sh
 ```
 
 **Por qué funciona**: el JDBC Source connector está configurado en modo `incrementing` o `timestamp+incrementing`, así que cada nuevo `id` insertado en `pedidos` se publica al topic en un par de segundos.
