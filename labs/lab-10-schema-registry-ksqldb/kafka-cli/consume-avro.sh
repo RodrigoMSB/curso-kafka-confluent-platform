@@ -10,7 +10,9 @@ echo -e "${CYAN}[Consume Avro] Tópico: ${TOPIC}${NC}"
 echo "  Presiona Ctrl+C para detener"
 echo "────────────────────────────────────────────────────────"
 
-docker exec -it schema-registry kafka-avro-console-consumer \
+docker exec -it \
+  -e SCHEMA_REGISTRY_LOG4J_OPTS="-Dlog4j2.configurationFile=/etc/cp-base-java/log4j2.yaml" \
+  schema-registry kafka-avro-console-consumer \
   --bootstrap-server kafka-broker-1:29092 \
   --topic "$TOPIC" \
   --from-beginning \

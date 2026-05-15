@@ -22,7 +22,9 @@ EOF
 echo -e "${CYAN}[Produce Pedido Avro] -> novatech.lab10.pedidos${NC}"
 echo "  ID: ${ID} | Cliente: ${CLIENTE} | Producto: ${PRODUCTO}"
 
-echo "$MENSAJE" | docker exec -i schema-registry kafka-avro-console-producer \
+echo "$MENSAJE" | docker exec -i \
+  -e SCHEMA_REGISTRY_LOG4J_OPTS="-Dlog4j2.configurationFile=/etc/cp-base-java/log4j2.yaml" \
+  schema-registry kafka-avro-console-producer \
   --bootstrap-server kafka-broker-1:29092 \
   --topic novatech.lab10.pedidos \
   --property schema.registry.url=http://schema-registry:8081 \

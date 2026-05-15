@@ -20,7 +20,9 @@ echo -e "${CYAN}[Produce Cliente Avro] -> novatech.lab10.clientes${NC}"
 echo "  ID: ${ID} | Nombre: ${NOMBRE} | Tipo: ${TIPO} | Ciudad: ${CIUDAD}"
 
 # Producir con key Avro int + value Avro
-echo "$MENSAJE" | docker exec -i schema-registry kafka-avro-console-producer \
+echo "$MENSAJE" | docker exec -i \
+  -e SCHEMA_REGISTRY_LOG4J_OPTS="-Dlog4j2.configurationFile=/etc/cp-base-java/log4j2.yaml" \
+  schema-registry kafka-avro-console-producer \
   --bootstrap-server kafka-broker-1:29092 \
   --topic novatech.lab10.clientes \
   --property schema.registry.url=http://schema-registry:8081 \
