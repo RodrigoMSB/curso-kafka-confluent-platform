@@ -1,4 +1,4 @@
-# Soluciones del Desafío - Lab 04
+# Lab 04 — Respuestas del desafío (solución de referencia)
 
 > **⚠ Importante**: estas son las soluciones de referencia del lab.
 > Antes de consultarlas, intenta resolver cada actividad por tu cuenta.

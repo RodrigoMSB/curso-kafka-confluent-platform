@@ -1,4 +1,4 @@
-# Respuestas del desafío extra - Lab 01
+# Lab 01 — Respuestas del desafío (solución de referencia)
 
 > **⚠ Importante**: estas son las soluciones de referencia del lab.
 > Antes de consultarlas, intenta resolver cada actividad por tu cuenta.

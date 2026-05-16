@@ -1,4 +1,4 @@
-# Soluciones del Desafío - Lab 06
+# Lab 06 — Respuestas del desafío (solución de referencia)
 
 > **⚠ Importante**: estas son las soluciones de referencia del lab.
 > Antes de consultarlas, intenta resolver cada actividad por tu cuenta.

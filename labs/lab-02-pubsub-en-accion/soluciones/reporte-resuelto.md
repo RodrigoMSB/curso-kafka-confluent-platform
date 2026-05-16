@@ -1,4 +1,4 @@
-# Reporte del Lab 02 - SOLUCIÓN
+# Lab 02 — Reporte resuelto (solución de referencia)
 
 > **⚠ Importante**: estas son las soluciones de referencia del lab.
 > Antes de consultarlas, intenta resolver cada actividad por tu cuenta.
