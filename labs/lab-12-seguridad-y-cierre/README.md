@@ -101,9 +101,7 @@ lab-12-seguridad-y-cierre/
 │   ├── reporte-resuelto.md            respuestas modelo
 │   └── respuestas-desafio.md          comandos paso a paso del capstone
 └── docs/
-    ├── notas-instructor.md            con honestidad pedagógica en 4 puntos
-    ├── troubleshooting.md
-    └── rubrica-evaluacion-final.md
+    └── troubleshooting.md
 ```
 
 ---
@@ -155,8 +153,6 @@ Este lab toma 4 atajos respecto a producción real. Es importante que los entien
 2. **TLS server-side** (no mTLS): solo el broker presenta cert. En producción crítica, mTLS para inter-broker.
 3. **RBAC como concepto** (no se configura): requiere Confluent Enterprise + MDS + LDAP, fuera del scope.
 4. **Kafbat UI sin auth**: para que veas las cosas. En prod va detrás de SSO.
-
-Detalles en `docs/notas-instructor.md`.
 
 ---
 

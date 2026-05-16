@@ -10,9 +10,8 @@
 ## ⚠️ Nota técnica importante
 
 Este lab usa **Confluent Platform 7.9.0** (no 8.2.0 como los labs anteriores) para
-poder usar Confluent Control Center Legacy. Esta es una decisión deliberada documentada
-en `docs/notas-instructor.md`. La versión de Kafka es 3.7 en lugar de 4.2, pero
-todos los conceptos del curso aplican igual.
+poder usar Confluent Control Center Legacy. La versión de Kafka es 3.7 en lugar
+de 4.2, pero todos los conceptos del curso aplican igual.
 
 ---
 

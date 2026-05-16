@@ -126,10 +126,8 @@ lab-01-radiografia-cluster/
 ├── soluciones/                  # Solo para el instructor
 │   ├── reporte-resuelto.md
 │   └── respuestas-desafio.md
-└── docs/                        # Documentación del instructor
-    ├── notas-instructor.md
-    ├── troubleshooting.md
-    └── rubrica-evaluacion.md
+└── docs/
+    └── troubleshooting.md
 ```
 
 ---

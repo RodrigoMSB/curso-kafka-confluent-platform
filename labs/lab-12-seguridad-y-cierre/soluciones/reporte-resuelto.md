@@ -106,9 +106,3 @@ Las respuestas son personales, pero patrones esperables:
 - Lab más difícil suele ser el 06 (transacciones) o el 11 (JMX rules / dashboards).
 - Concepto que más cuesta: idempotencia + transacciones, o la diferencia AuthN/AuthZ.
 - Prioridades para producción: replicación adecuada, monitoreo (lag, ISR, under-replicated), backups/disaster recovery, auth + auditoría.
-
----
-
-## Rúbrica resumida
-
-Ver `docs/rubrica-evaluacion-final.md` para criterios detallados de calificación.

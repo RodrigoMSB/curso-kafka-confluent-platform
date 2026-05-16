@@ -96,9 +96,7 @@ lab-02-pubsub-en-accion/
 │   ├── reporte-resuelto.md
 │   └── respuestas-desafio.md
 └── docs/
-    ├── notas-instructor.md
-    ├── troubleshooting.md
-    └── rubrica-evaluacion.md
+    └── troubleshooting.md
 ```
 
 ---

@@ -23,8 +23,6 @@ genera fricciones legítimas. El instructor mantiene su propia cuenta para
 mostrar el flujo completo en clase con capturas reales. Quienes quieran
 replicar lo verán documentado en `guia/04` para hacerlo en casa.
 
-Esta decisión está documentada en `docs/notas-instructor.md`.
-
 ---
 
 ## Contexto narrativo
