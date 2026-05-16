@@ -31,7 +31,7 @@ Con clave fija: típicamente **30-50% del throughput** comparado con distribuci�
 
 ### Default (sticky)
 
-El particionador default en Kafka 3.x+ usa **sticky batching**: agrupa mensajes en batches por partición, cambiando de partición solo cuando el batch se cierra. Esto da mejor throughput y mejor compactación de batches.
+El particionador default desde Kafka 3.x (vigente en 4.x) usa **sticky batching**: agrupa mensajes en batches por partición, cambiando de partición solo cuando el batch se cierra. Esto da mejor throughput y mejor compactación de batches.
 
 ### RoundRobinPartitioner
 
