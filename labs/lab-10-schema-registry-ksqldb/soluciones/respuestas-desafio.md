@@ -1,5 +1,14 @@
 # Soluciones del Desafío - Lab 10
 
+> **⚠ Importante**: estas son las soluciones de referencia del lab.
+> Antes de consultarlas, intenta resolver cada actividad por tu cuenta.
+> El aprendizaje real está en pelearte con el problema. Estas respuestas
+> son para validar tu trabajo o destrabarte después de intentarlo.
+>
+> Algunos valores específicos (IDs, timestamps, números de partición
+> que actúan como líder) pueden variar entre ejecuciones — lo importante
+> es la consistencia conceptual.
+
 ## Streaming SQL en producción
 
 Este desafío demuestra capacidades que en producción real reemplazan a aplicaciones Kafka Streams completas.

@@ -1,6 +1,13 @@
 # Soluciones detalladas — capstone Lab 12
 
-> Si llegaste aquí sin intentar antes, vuelve. La idea es que primero te pelees con el problema. Estas soluciones son para validar/destrabarte después.
+> **⚠ Importante**: estas son las soluciones de referencia del lab.
+> Antes de consultarlas, intenta resolver cada actividad por tu cuenta.
+> El aprendizaje real está en pelearte con el problema. Estas respuestas
+> son para validar tu trabajo o destrabarte después de intentarlo.
+>
+> Algunos valores específicos (IDs, timestamps, números de partición
+> que actúan como líder) pueden variar entre ejecuciones — lo importante
+> es la consistencia conceptual.
 
 ---
 

@@ -1,6 +1,13 @@
 # Reporte de evaluación final — solución de referencia
 
-> **Para el instructor / para auto-corregir**: este es el reporte completado con respuestas modelo. Las salidas concretas pueden variar (timestamps, IDs), pero el contenido conceptual debe coincidir.
+> **⚠ Importante**: estas son las soluciones de referencia del lab.
+> Antes de consultarlas, intenta resolver cada actividad por tu cuenta.
+> El aprendizaje real está en pelearte con el problema. Estas respuestas
+> son para validar tu trabajo o destrabarte después de intentarlo.
+>
+> Algunos valores específicos (IDs, timestamps, números de partición
+> que actúan como líder) pueden variar entre ejecuciones — lo importante
+> es la consistencia conceptual.
 
 ---
 

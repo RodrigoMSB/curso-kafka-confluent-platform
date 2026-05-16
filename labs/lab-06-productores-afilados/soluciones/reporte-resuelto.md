@@ -1,5 +1,14 @@
 # Reporte del Lab 06 - SOLUCIÓN
 
+> **⚠ Importante**: estas son las soluciones de referencia del lab.
+> Antes de consultarlas, intenta resolver cada actividad por tu cuenta.
+> El aprendizaje real está en pelearte con el problema. Estas respuestas
+> son para validar tu trabajo o destrabarte después de intentarlo.
+>
+> Algunos valores específicos (IDs, timestamps, números de partición
+> que actúan como líder) pueden variar entre ejecuciones — lo importante
+> es la consistencia conceptual.
+
 ## Parte 1: Tuning de batch.size y linger.ms
 
 ### Métricas típicas (Mac M1/M2 con Docker)
